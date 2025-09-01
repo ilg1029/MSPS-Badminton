@@ -1,29 +1,24 @@
-name: Check MSPS Announcements
+name: MSPS RSS Checker
 
 on:
   schedule:
-    - cron: "0 1 * * *"  # 每天台灣早上 9 點 (UTC+8 → UTC+1)
-  workflow_dispatch:      # 允許手動執行
+    - cron: '0 9 * * *'  # 每天上午 9 點執行
+  workflow_dispatch:
 
 jobs:
-  check:
+  check-rss:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@v3
-
+      - uses: actions/checkout@v3
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: "3.11"
-
       - name: Install dependencies
-        run: pip install -r requirements.txt
-
-      - name: Run script
+        run: pip install feedparser
+      - name: Run RSS Checker
+        run: python msps_checker_rss.py
         env:
           EMAIL_SENDER: ${{ secrets.EMAIL_SENDER }}
           EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
           EMAIL_RECEIVER: ${{ secrets.EMAIL_RECEIVER }}
-        run: python msps_checker.py
