@@ -20,13 +20,13 @@ def check_announcements():
     soup = BeautifulSoup(res.text, "html.parser")
     announcements = soup.find_all("a")
     matches = []
-    print(f"公告標題: {text}")
 
     for ann in announcements:
         text = ann.get_text(strip=True)
         link = ann.get("href")
         if any(keyword in text for keyword in KEYWORDS):
             matches.append(f"{text}\n👉 {link}")
+            print(f"公告標題: {text}")
     return matches
 
 def send_email(matches):
