@@ -9,9 +9,9 @@ KEYWORDS = ["羽球", "抽籤", "場地租借"]
 
 SMTP_SERVER = "smtp.gmail.com"  # 如果用 Gmail
 SMTP_PORT = 587
-EMAIL_SENDER = "你的Email@gmail.com"
-EMAIL_PASSWORD = "你的應用程式密碼"   # Gmail 要用 App Password
-EMAIL_RECEIVER = "收件人Email@gmail.com"
+EMAIL_SENDER = os.getenv("EMAIL_SENDER")
+EMAIL_PASSWORD = os.getenv("EMAIL_PASSWORD")
+EMAIL_RECEIVER = os.getenv("EMAIL_RECEIVER")
 
 # === 爬蟲檢查公告 ===
 def check_announcements():
