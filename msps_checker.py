@@ -1,24 +1,23 @@
+import os
 import requests
 from bs4 import BeautifulSoup
 import smtplib
 from email.mime.text import MIMEText
 
 # === 設定 ===
-URL = "https://www.msps.tp.edu.tw/nss/p/xingzhengbugaolan"  # 民生國小行政公告頁
+URL = "https://www.msps.tp.edu.tw/nss/p/xingzhengbugaolan"
 KEYWORDS = ["羽球", "抽籤", "場地租借"]
 
-SMTP_SERVER = "smtp.gmail.com"  # 如果用 Gmail
+SMTP_SERVER = "smtp.gmail.com"
 SMTP_PORT = 587
 EMAIL_SENDER = os.getenv("EMAIL_SENDER")
 EMAIL_PASSWORD = os.getenv("EMAIL_PASSWORD")
 EMAIL_RECEIVER = os.getenv("EMAIL_RECEIVER")
 
-# === 爬蟲檢查公告 ===
 def check_announcements():
     res = requests.get(URL)
     res.encoding = "utf-8"
     soup = BeautifulSoup(res.text, "html.parser")
-
     announcements = soup.find_all("a")
     matches = []
 
@@ -27,10 +26,8 @@ def check_announcements():
         link = ann.get("href")
         if any(keyword in text for keyword in KEYWORDS):
             matches.append(f"{text}\n👉 {link}")
-
     return matches
 
-# === 發送 Email ===
 def send_email(matches):
     body = "\n\n".join(matches)
     msg = MIMEText(body, "plain", "utf-8")
@@ -43,7 +40,6 @@ def send_email(matches):
         server.login(EMAIL_SENDER, EMAIL_PASSWORD)
         server.sendmail(EMAIL_SENDER, EMAIL_RECEIVER, msg.as_string())
 
-# === 主程式 ===
 if __name__ == "__main__":
     matches = check_announcements()
     if matches:
