@@ -4,13 +4,20 @@ import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
+# --- 環境變數 ---
 EMAIL_SENDER = os.getenv("EMAIL_SENDER")
 EMAIL_PASSWORD = os.getenv("EMAIL_PASSWORD")
 EMAIL_RECEIVER = os.getenv("EMAIL_RECEIVER")
 
-FEED_URL = "RSS_FEED_URL"  # 替換成布告欄的訂閱連結
+FEED_URL = "RSS_FEED_URL"  # 替換成布告欄的 RSS 訂閱連結
 KEYWORDS = ["羽球", "抽籤", "場地租借", "暑假"]
 
+# --- 清理文字函數 ---
+def clean_text(text):
+    # 去掉換行、制表符、前後空白，統一小寫
+    return text.replace("\n","").replace("\r","").replace("\t","").replace(" ","").lower()
+
+# --- 取得公告 ---
 def fetch_feed():
     feed = feedparser.parse(FEED_URL)
     matches = []
@@ -19,12 +26,17 @@ def fetch_feed():
         title = entry.title
         link = entry.link
 
-        clean_text = title.replace("\n","").replace(" ","").lower()
-        if any(k.lower() in clean_text for k in KEYWORDS):
+        # debug: 印出抓到的原始標題
+        print("抓到標題:", repr(title))
+        print("清理後:", clean_text(title))
+
+        # 關鍵字匹配
+        if any(k.lower() in clean_text(title) for k in KEYWORDS):
             matches.append((title, link))
-    
+
     return matches
 
+# --- 發 Email ---
 def send_email(new_announcements):
     if not new_announcements:
         return
@@ -45,6 +57,7 @@ def send_email(new_announcements):
         server.login(EMAIL_SENDER, EMAIL_PASSWORD)
         server.send_message(msg)
 
+# --- 主程式 ---
 if __name__ == "__main__":
     matches = fetch_feed()
     if matches:
