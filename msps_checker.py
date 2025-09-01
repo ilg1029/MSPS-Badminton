@@ -20,6 +20,7 @@ def check_announcements():
     soup = BeautifulSoup(res.text, "html.parser")
     announcements = soup.find_all("a")
     matches = []
+    print(f"公告標題: {text}")
 
     for ann in announcements:
         text = ann.get_text(strip=True)
