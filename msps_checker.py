@@ -12,7 +12,7 @@ EMAIL_RECEIVER = os.getenv("EMAIL_RECEIVER")
 
 BASE_URL = "https://msps.tp.edu.tw"
 ANNOUNCE_PAGE = BASE_URL + "/nss/p/xingzhengbugaolan"
-KEYWORDS = ["羽球", "抽籤", "場地租借", "暑假"]
+KEYWORDS = ["羽球", "抽籤", "場地租借"]
 
 # --- 抓公告 ---
 def fetch_announcements():
@@ -26,7 +26,7 @@ def fetch_announcements():
         link = ann.get("href")
         if not link:
             continue
-        # 補完整網址
+        # ✅ 避免重複加 BASE_URL
         if not link.startswith("http"):
             link = BASE_URL + link
         # 篩選關鍵字
