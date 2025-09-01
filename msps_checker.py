@@ -12,7 +12,7 @@ EMAIL_RECEIVER = os.getenv("EMAIL_RECEIVER")
 
 BASE_URL = "https://msps.tp.edu.tw"
 ANNOUNCE_PAGE = BASE_URL + "/nss/p/xingzhengbugaolan"
-KEYWORDS = ["羽球", "抽籤", "場地租借"]
+KEYWORDS = ["羽球", "抽籤", "場地租借", "暑假"]
 
 # --- 抓公告 ---
 def fetch_announcements():
