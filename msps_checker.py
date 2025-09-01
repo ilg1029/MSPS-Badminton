@@ -1,41 +1,27 @@
+import feedparser
 import os
-import requests
-from bs4 import BeautifulSoup
+import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
-import smtplib
 
 EMAIL_SENDER = os.getenv("EMAIL_SENDER")
 EMAIL_PASSWORD = os.getenv("EMAIL_PASSWORD")
 EMAIL_RECEIVER = os.getenv("EMAIL_RECEIVER")
 
-ANNOUNCE_PAGE = "https://msps.tp.edu.tw/nss/p/xingzhengbugaolan"
+FEED_URL = "RSS_FEED_URL"  # 替換成布告欄的訂閱連結
 KEYWORDS = ["羽球", "抽籤", "場地租借", "暑假"]
 
-def fetch_announcements():
-    res = requests.get(ANNOUNCE_PAGE)
-    res.encoding = "utf-8"
-    soup = BeautifulSoup(res.text, "html.parser")
-    
+def fetch_feed():
+    feed = feedparser.parse(FEED_URL)
     matches = []
 
-    for ann in soup.find_all("a"):
-        text = ann.get_text(strip=True)
-        link = ann.get("href")
+    for entry in feed.entries:
+        title = entry.title
+        link = entry.link
 
-        if not text or not link:
-            continue
-
-        # 清理文字
-        clean_text = text.replace("\n","").replace(" ","").lower()
-
+        clean_text = title.replace("\n","").replace(" ","").lower()
         if any(k.lower() in clean_text for k in KEYWORDS):
-            # 嘗試檢查連線，不成功也不報錯
-            try:
-                requests.head(link, timeout=3)
-            except requests.RequestException:
-                print(f"⚠️ 無法訪問網址，但仍保留文字: {link}")
-            matches.append((text, link))
+            matches.append((title, link))
     
     return matches
 
@@ -60,7 +46,7 @@ def send_email(new_announcements):
         server.send_message(msg)
 
 if __name__ == "__main__":
-    matches = fetch_announcements()
+    matches = fetch_feed()
     if matches:
         send_email(matches)
         print(f"✅ 發現 {len(matches)} 則新公告，已寄出通知！")
