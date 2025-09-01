@@ -2,7 +2,7 @@ name: Check MSPS Announcements
 
 on:
   schedule:
-    - cron: "0 1 * * *"  # 每天台灣早上 9 點執行 (UTC+8 → UTC+1)
+    - cron: "0 1 * * *"  # 每天台灣早上 9 點 (UTC+8 → UTC+1)
   workflow_dispatch:      # 允許手動執行
 
 jobs:
@@ -19,7 +19,7 @@ jobs:
           python-version: "3.11"
 
       - name: Install dependencies
-        run: pip install requests beautifulsoup4
+        run: pip install -r requirements.txt
 
       - name: Run script
         env:
