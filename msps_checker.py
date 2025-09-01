@@ -40,10 +40,16 @@ def send_email(matches):
         server.login(EMAIL_SENDER, EMAIL_PASSWORD)
         server.sendmail(EMAIL_SENDER, EMAIL_RECEIVER, msg.as_string())
 
+#if __name__ == "__main__":
+#    matches = check_announcements()
+#    if matches:
+#        send_email(matches)
+#        print("✅ 發現新公告，已寄出通知！")
+#    else:
+#        print("ℹ️ 沒有新公告")
+
+
 if __name__ == "__main__":
-    matches = check_announcements()
-    if matches:
-        send_email(matches)
-        print("✅ 發現新公告，已寄出通知！")
-    else:
-        print("ℹ️ 沒有新公告")
+    # 測試時直接寄一封
+    send_email(["這是測試信件，代表 workflow 寄信功能正常！"])
+
